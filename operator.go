@@ -12,8 +12,8 @@ const (
 	NOT     = "<>"
 	NOTIN   = "NOT IN"
 	LIKE    = "LIKE"
-	AND     = "AND"
-	OR      = "OR"
+
+	DefaultOperator = EQUALS
 )
 
 func GetOperators() map[string]string {
@@ -36,5 +36,5 @@ func Operator(opr string) string {
 	if operator, ok := operators[opr]; ok {
 		return operator
 	}
-	return EQUALS
+	return DefaultOperator
 }
