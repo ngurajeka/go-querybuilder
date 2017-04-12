@@ -5,6 +5,8 @@ type QueryBuilder interface {
 	AddOrder(Order)
 	AddOrderIfNotExist(Order)
 	Copy(QueryBuilder)
+	SetOffset(int)
+	SetLimit(int)
 
 	Remove(string)
 	RemoveByPrefix(string)
@@ -17,6 +19,7 @@ type QueryBuilder interface {
 	Orders() []Order
 	Map() map[string]interface{}
 	String(exclude ...string) string
+	StringifyOrder() string
 }
 
 type querybuilder struct {
@@ -53,6 +56,14 @@ func (qb *querybuilder) Copy(another_qb QueryBuilder) {
 	for _, condition := range another_qb.Conditions() {
 		qb.AddCondition(condition)
 	}
+}
+
+func (qb *querybuilder) SetOffset(offset int) {
+	qb.offset = offset
+}
+
+func (qb *querybuilder) SetLimit(limit int) {
+	qb.limit = limit
 }
 
 func (qb *querybuilder) Remove(f string) {
@@ -118,6 +129,14 @@ func (qb *querybuilder) String(exclude ...string) string {
 		if !isExist(condition.Field(), exclude) {
 			str += condition.String((str != ""))
 		}
+	}
+	return str
+}
+
+func (qb *querybuilder) StringifyOrder() string {
+	var str string
+	for _, order := range qb.orders {
+		str += order.String((str != ""))
 	}
 	return str
 }
