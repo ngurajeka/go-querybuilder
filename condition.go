@@ -102,5 +102,8 @@ func (c *filter) convertToSlice(v interface{}) []interface{} {
 func (c *filter) String(useConjunction bool) (str string) {
 	str = fmt.Sprintf("%s %s", c.field, c.operator)
 	str = c.stringify(str, c.value)
+	if useConjunction {
+		str = fmt.Sprintf(" %s %s", c.conjunction, str)
+	}
 	return str
 }
