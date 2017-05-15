@@ -14,6 +14,7 @@ const (
 
 type Condition interface {
 	Field() string
+	Operator() string
 	Value() interface{}
 	Map() map[string]interface{}
 	String(useConjunction bool) string
@@ -39,6 +40,10 @@ func Default(f string, v interface{}) Condition {
 
 func (c *filter) Field() string {
 	return c.field
+}
+
+func (c *filter) Operator() string {
+	return c.operator
 }
 
 func (c *filter) Value() interface{} {
