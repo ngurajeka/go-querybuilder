@@ -59,6 +59,7 @@ func (b *builder) filter(qb querybuilder.QueryBuilder) querybuilder.QueryBuilder
 func (b *builder) pagination(qb querybuilder.QueryBuilder) querybuilder.QueryBuilder {
 	var (
 		limit  = 10
+		number = 1
 		offset = 0
 	)
 	pageNumber := b.values.Get("pageNumber")
@@ -70,14 +71,15 @@ func (b *builder) pagination(qb querybuilder.QueryBuilder) querybuilder.QueryBui
 		}
 	}
 	if pageNumber != "" {
-		number, err := strconv.Atoi(pageNumber)
+		_number, err := strconv.Atoi(pageNumber)
 		if err == nil {
+			number = _number
 			offset = (number - 1) * limit
 		}
 	}
 
 	qb.SetLimit(limit)
-	qb.SetNumber(pageNumber)
+	qb.SetNumber(number)
 	qb.SetOffset(offset)
 	return qb
 }
