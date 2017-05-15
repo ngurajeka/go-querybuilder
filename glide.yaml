@@ -1,0 +1,7 @@
+package: github.com/ngurajeka/go-querybuilder
+import: 
+  - package: upper.io/db.v3
+    version: ^3.0.1
+    subpackages:
+      - lib/sqlbuilder
+      - mysql
