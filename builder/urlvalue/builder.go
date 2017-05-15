@@ -76,8 +76,9 @@ func (b *builder) pagination(qb querybuilder.QueryBuilder) querybuilder.QueryBui
 		}
 	}
 
-	qb.SetOffset(offset)
 	qb.SetLimit(limit)
+	qb.SetNumber(pageNumber)
+	qb.SetOffset(offset)
 	return qb
 }
 
