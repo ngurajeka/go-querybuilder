@@ -7,6 +7,7 @@ type QueryBuilder interface {
 	Copy(QueryBuilder)
 	SetOffset(int)
 	SetLimit(int)
+	SetNumber(int)
 
 	Remove(string)
 	RemoveByPrefix(string)
@@ -15,6 +16,7 @@ type QueryBuilder interface {
 	HasConditions() bool
 	HasOrders() bool
 	Limit() int
+	Number() int
 	Offset() int
 	Orders() []Order
 	Map() map[string]interface{}
@@ -23,9 +25,9 @@ type QueryBuilder interface {
 }
 
 type querybuilder struct {
-	conditions    []Condition
-	orders        []Order
-	offset, limit int
+	conditions            []Condition
+	orders                []Order
+	limit, number, offset int
 }
 
 func NewQuerybuilder(offset, limit int) QueryBuilder {
@@ -58,12 +60,16 @@ func (qb *querybuilder) Copy(another_qb QueryBuilder) {
 	}
 }
 
-func (qb *querybuilder) SetOffset(offset int) {
-	qb.offset = offset
-}
-
 func (qb *querybuilder) SetLimit(limit int) {
 	qb.limit = limit
+}
+
+func (qb *querybuilder) SetNumber(number int) {
+	qb.number = number
+}
+
+func (qb *querybuilder) SetOffset(offset int) {
+	qb.offset = offset
 }
 
 func (qb *querybuilder) Remove(f string) {
@@ -106,12 +112,16 @@ func (qb *querybuilder) HasOrders() bool {
 	return len(qb.orders) > 0
 }
 
-func (qb *querybuilder) Limit() int {
-	return qb.limit
+func (qb *querybuilder) Number() int {
+	return qb.number
 }
 
 func (qb *querybuilder) Offset() int {
 	return qb.offset
+}
+
+func (qb *querybuilder) Limit() int {
+	return qb.limit
 }
 
 func (qb *querybuilder) Map() map[string]interface{} {
