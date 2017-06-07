@@ -10,9 +10,11 @@ type QueryBuilder interface {
 	SetNumber(int)
 
 	Remove(string)
+	RemoveAll()
 	RemoveByPrefix(string)
-	RemovePaging()
 	RemoveConditions()
+	RemoveOrders()
+	RemovePaging()
 
 	Conditions() []Condition
 	HasConditions() bool
@@ -98,14 +100,24 @@ func (qb *querybuilder) RemoveByPrefix(p string) {
 	qb.conditions = conditions
 }
 
-func (qb *querybuilder) RemovePaging() {
-	qb.limit = 0
-	qb.number = 0
-	qb.offset = 0
+func (qb *querybuilder) RemoveAll() {
+	qb.RemoveConditions()
+	qb.RemoveOrders()
+	qb.RemovePaging()
 }
 
 func (qb *querybuilder) RemoveConditions() {
 	qb.conditions = make([]Condition, 0)
+}
+
+func (qb *querybuilder) RemoveOrders() {
+	qb.orders = make([]Order, 0)
+}
+
+func (qb *querybuilder) RemovePaging() {
+	qb.limit = 0
+	qb.number = 0
+	qb.offset = 0
 }
 
 func (qb *querybuilder) Conditions() []Condition {
