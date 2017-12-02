@@ -7,10 +7,11 @@ import (
 	db "upper.io/db.v3"
 )
 
-func AsUpperDBCondition(q querybuilder.QueryBuilder) (conds []interface{}) {
+func AsUpperDBCondition(q querybuilder.QueryBuilder) db.Cond {
+	var cond db.Cond
 	for _, cond := range q.Conditions() {
 		field := fmt.Sprintf("%s %s", cond.Field(), cond.Operator())
-		conds = append(conds, db.Cond{field: cond.Value()})
+		cond[field] = cond.Value()
 	}
-	return
+	return cond
 }
