@@ -8,10 +8,10 @@ import (
 )
 
 func AsUpperDBCondition(q querybuilder.QueryBuilder) db.Cond {
-	var cond db.Cond
-	for _, cond := range q.Conditions() {
-		field := fmt.Sprintf("%s %s", cond.Field(), cond.Operator())
-		cond[field] = cond.Value()
+	cond := db.Cond{}
+	for _, condition := range q.Conditions() {
+		field := fmt.Sprintf("%s %s", condition.Field(), condition.Operator())
+		cond[field] = condition.Value()
 	}
 	return cond
 }
