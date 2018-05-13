@@ -96,6 +96,10 @@ func (c *filter) convertToSlice(v interface{}) []interface{} {
 		for _, u := range value {
 			newSlice = append(newSlice, u)
 		}
+	case []uint64:
+		for _, u := range value {
+			newSlice = append(newSlice, u)
+		}
 	case []int:
 		for _, i := range value {
 			newSlice = append(newSlice, i)
