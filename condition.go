@@ -65,6 +65,8 @@ func (c *filter) stringify(str string, v interface{}) string {
 		str = fmt.Sprintf("%s %d", str, v.(int))
 	case uint:
 		str = fmt.Sprintf("%s %d", str, v.(uint))
+	case uint64:
+		str = fmt.Sprintf("%s %d", str, v.(uint64))
 	case string:
 		str = fmt.Sprintf("%s '%s'", str, v.(string))
 	case nil:
