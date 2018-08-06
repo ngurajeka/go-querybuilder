@@ -12,6 +12,7 @@ const (
 	NOT     = "<>"
 	NOTIN   = "NOT IN"
 	LIKE    = "LIKE"
+	ILIKE   = "ILIKE"
 
 	DefaultOperator = EQUALS
 )
@@ -27,6 +28,7 @@ func GetOperators() map[string]string {
 		"nin":    NOTIN,
 		"not":    NOT,
 		"like":   LIKE,
+		"ilike":  ILIKE,
 	}
 	return operators
 }
