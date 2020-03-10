@@ -1,5 +1,10 @@
 package querybuilder
 
+import (
+	"fmt"
+	"strings"
+)
+
 type QueryBuilder interface {
 	AddCondition(Condition)
 	AddOrder(Order)
@@ -25,6 +30,7 @@ type QueryBuilder interface {
 	Orders() []Order
 	Map() map[string]interface{}
 	String(exclude ...string) string
+	PrepareStatement() (string, []interface{})
 	StringifyOrder() string
 }
 
@@ -165,6 +171,23 @@ func (qb *querybuilder) String(exclude ...string) string {
 		}
 	}
 	return str
+}
+
+func (qb *querybuilder) PrepareStatement() (string, []interface{}) {
+	var (
+		q      []string
+		values []interface{}
+	)
+	for _, condition := range qb.conditions {
+		if condition.Operator() == IN || condition.Operator() == NOTIN {
+			q = append(q, fmt.Sprintf("%s %s (?)", condition.Field(), condition.Operator()))
+		} else {
+			q = append(q, fmt.Sprintf("%s %s ?", condition.Field(), condition.Operator()))
+		}
+		values = append(values, condition.Value())
+	}
+
+	return strings.Join(q, " "), values
 }
 
 func (qb *querybuilder) StringifyOrder() string {
