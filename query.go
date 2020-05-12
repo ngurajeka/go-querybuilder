@@ -1,7 +1,6 @@
 package querybuilder
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/ngurajeka/go-querybuilder/v2/condition"
@@ -111,12 +110,9 @@ func (qb *querybuilder) PrepareStatement() (string, []interface{}) {
 		values []interface{}
 	)
 	for _, v := range qb.conditions {
-		if v.Operator() == condition.IN || v.Operator() == condition.NOTIN {
-			q = append(q, fmt.Sprintf("%s %s (?)", v.Field(), v.Operator()))
-		} else {
-			q = append(q, fmt.Sprintf("%s %s ?", v.Field(), v.Operator()))
-		}
-		values = append(values, v.Value())
+		stmt, v := v.PrepareStatement(len(values) > 0)
+		q = append(q, stmt)
+		values = append(values, v)
 	}
 
 	return strings.Join(q, " "), values

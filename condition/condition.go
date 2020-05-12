@@ -17,10 +17,11 @@ const (
 // Condition store a single filter
 type Condition interface {
 	Field() string
-	Operator() string
-	Value() interface{}
 	Map() map[string]interface{}
+	Operator() string
+	PrepareStatement(useConjunction bool) (string, interface{})
 	String(useConjunction bool) string
+	Value() interface{}
 }
 
 type filter struct {
@@ -60,14 +61,6 @@ func (c *filter) Field() string {
 	return c.field
 }
 
-func (c *filter) Operator() string {
-	return c.operator
-}
-
-func (c *filter) Value() interface{} {
-	return c.value
-}
-
 func (c *filter) Map() map[string]interface{} {
 	return map[string]interface{}{
 		"field":       c.field,
@@ -75,6 +68,45 @@ func (c *filter) Map() map[string]interface{} {
 		"operator":    c.operator,
 		"conjunction": c.conjunction,
 	}
+}
+
+func (c *filter) Operator() string {
+	return c.operator
+}
+
+func (c *filter) PrepareStatement(useConjunction bool) (string, interface{}) {
+	var stmt string
+	switch c.operator {
+	case NULL:
+		stmt = fmt.Sprintf("%s IS NULL", c.field)
+	case IN, NOTIN:
+		stmt = fmt.Sprintf("%s %s (?)", c.field, c.operator)
+	default:
+		stmt = fmt.Sprintf("%s %s ?", c.field, c.operator)
+	}
+
+	if useConjunction {
+		stmt = fmt.Sprintf("%s %s", c.conjunction, stmt)
+	}
+
+	return stmt, c.value
+}
+
+func (c *filter) String(useConjunction bool) (str string) {
+	if c.operator == NULL {
+		str = fmt.Sprintf("%s IS", c.field)
+	} else {
+		str = fmt.Sprintf("%s %s", c.field, c.operator)
+	}
+	str = c.stringify(str, c.value)
+	if useConjunction {
+		str = fmt.Sprintf(" %s %s", c.conjunction, str)
+	}
+	return str
+}
+
+func (c *filter) Value() interface{} {
+	return c.value
 }
 
 func (c *filter) stringify(str string, v interface{}) string {
@@ -126,17 +158,4 @@ func (c *filter) convertToSlice(v interface{}) []interface{} {
 		}
 	}
 	return newSlice
-}
-
-func (c *filter) String(useConjunction bool) (str string) {
-	if c.operator == NULL {
-		str = fmt.Sprintf("%s IS", c.field)
-	} else {
-		str = fmt.Sprintf("%s %s", c.field, c.operator)
-	}
-	str = c.stringify(str, c.value)
-	if useConjunction {
-		str = fmt.Sprintf(" %s %s", c.conjunction, str)
-	}
-	return str
 }
