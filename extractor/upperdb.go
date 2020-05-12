@@ -7,6 +7,7 @@ import (
 	db "upper.io/db.v3"
 )
 
+// AsUpperDBCondition create upper.db condition usingfrom querybuilder
 func AsUpperDBCondition(q querybuilder.QueryBuilder) db.Cond {
 	cond := db.Cond{}
 	for _, condition := range q.Conditions() {

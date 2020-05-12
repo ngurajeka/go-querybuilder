@@ -1,4 +1,4 @@
-package querybuilder
+package condition
 
 import (
 	"fmt"
@@ -6,12 +6,15 @@ import (
 )
 
 const (
+	// AND conjuction
 	AND = "AND"
-	OR  = "OR"
-
+	// OR conjuction
+	OR = "OR"
+	// DefaultConjunction default to AND
 	DefaultConjunction = AND
 )
 
+// Condition store a single filter
 type Condition interface {
 	Field() string
 	Operator() string
@@ -25,6 +28,7 @@ type filter struct {
 	value                        interface{}
 }
 
+// New create new condition with field, operator, conjuction and value as parameter
 func New(f, o, c string, v interface{}) Condition {
 	return &filter{
 		field:       f,
@@ -34,8 +38,22 @@ func New(f, o, c string, v interface{}) Condition {
 	}
 }
 
+// Default create new condition with field and value as parameter
+// operator will be automatically assigned based on it's value
+// conjuction will use DefaultConjunction
 func Default(f string, v interface{}) Condition {
+	if v == nil {
+		return Nil(f)
+	}
+	if reflect.ValueOf(v).Kind() == reflect.Slice {
+		return New(f, IN, DefaultConjunction, v)
+	}
 	return New(f, DefaultOperator, DefaultConjunction, v)
+}
+
+// Nil create new condition with Null Value
+func Nil(f string) Condition {
+	return New(f, NULL, DefaultConjunction, nil)
 }
 
 func (c *filter) Field() string {
@@ -70,7 +88,7 @@ func (c *filter) stringify(str string, v interface{}) string {
 	case string:
 		str = fmt.Sprintf("%s '%s'", str, v.(string))
 	case nil:
-		str = fmt.Sprintf("%s NULL")
+		str = fmt.Sprintf("%s NULL", str)
 	default:
 		if reflect.ValueOf(v).Kind() == reflect.Slice {
 			var newStr string
@@ -111,7 +129,11 @@ func (c *filter) convertToSlice(v interface{}) []interface{} {
 }
 
 func (c *filter) String(useConjunction bool) (str string) {
-	str = fmt.Sprintf("%s %s", c.field, c.operator)
+	if c.operator == NULL {
+		str = fmt.Sprintf("%s IS", c.field)
+	} else {
+		str = fmt.Sprintf("%s %s", c.field, c.operator)
+	}
 	str = c.stringify(str, c.value)
 	if useConjunction {
 		str = fmt.Sprintf(" %s %s", c.conjunction, str)

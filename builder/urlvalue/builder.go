@@ -13,6 +13,7 @@ type builder struct {
 	values url.Values
 }
 
+// New create new Builder from url.Values
 func New(values url.Values) querybuilder.Builder {
 	return &builder{values: values}
 }

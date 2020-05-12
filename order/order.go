@@ -1,14 +1,17 @@
-package querybuilder
+package order
 
 import "fmt"
 
 const (
-	ASC  = "ASC"
+	// ASC order by Ascending
+	ASC = "ASC"
+	// DESC order by Descending
 	DESC = "DESC"
-
+	// DefaultOrder default to Ascending
 	DefaultOrder = ASC
 )
 
+// Order store ordering config
 type Order interface {
 	Field() string
 	Order() string
@@ -19,10 +22,12 @@ type order struct {
 	field, order string
 }
 
+// Ascending create new ascending order with field as parameter
 func Ascending(f string) Order {
 	return &order{f, ASC}
 }
 
+// Descending create new descending order with field as parameter
 func Descending(f string) Order {
 	return &order{f, DESC}
 }
