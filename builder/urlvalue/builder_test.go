@@ -4,8 +4,8 @@ import (
 	"net/url"
 	"testing"
 
-	querybuilder "github.com/ngurajeka/go-querybuilder"
-	"github.com/ngurajeka/go-querybuilder/builder/urlvalue"
+	querybuilder "github.com/ngurajeka/go-querybuilder/v2"
+	"github.com/ngurajeka/go-querybuilder/v2/builder/urlvalue"
 )
 
 func TestUrlValueBuilder(t *testing.T) {

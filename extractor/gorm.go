@@ -2,7 +2,7 @@ package extractor
 
 import (
 	"github.com/jinzhu/gorm"
-	querybuilder "github.com/ngurajeka/go-querybuilder"
+	querybuilder "github.com/ngurajeka/go-querybuilder/v2"
 )
 
 // GormQueryset appending gorm queryset into gorm database from querybuilder

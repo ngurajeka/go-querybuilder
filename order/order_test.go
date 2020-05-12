@@ -3,7 +3,7 @@ package order_test
 import (
 	"testing"
 
-	"github.com/ngurajeka/go-querybuilder"
+	"github.com/ngurajeka/go-querybuilder/v2"
 	"github.com/ngurajeka/go-querybuilder/v2/order"
 )
 

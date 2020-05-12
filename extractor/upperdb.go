@@ -3,7 +3,7 @@ package extractor
 import (
 	"fmt"
 
-	querybuilder "github.com/ngurajeka/go-querybuilder"
+	querybuilder "github.com/ngurajeka/go-querybuilder/v2"
 	db "upper.io/db.v3"
 )
 

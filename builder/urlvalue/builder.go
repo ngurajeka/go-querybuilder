@@ -6,7 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	querybuilder "github.com/ngurajeka/go-querybuilder"
+	querybuilder "github.com/ngurajeka/go-querybuilder/v2"
+	"github.com/ngurajeka/go-querybuilder/v2/condition"
+	"github.com/ngurajeka/go-querybuilder/v2/order"
 )
 
 type builder struct {
@@ -36,22 +38,22 @@ func (b *builder) filter(qb querybuilder.QueryBuilder) querybuilder.QueryBuilder
 		qSplit := rf.Split(q, -1)
 		fSplit := rw.Split(qSplit[1], -1)
 
-		opr := querybuilder.DefaultOperator
-		conj := querybuilder.DefaultConjunction
+		opr := condition.DefaultOperator
+		conj := condition.DefaultConjunction
 		for i, val := range fSplit {
 			switch {
 			case i == 3 && val != "":
-				opr = querybuilder.Operator(val)
+				opr = condition.Operator(val)
 			case i == 5 && val == "or":
-				conj = querybuilder.OR
+				conj = condition.OR
 			}
 		}
-		if opr == querybuilder.IN || opr == querybuilder.NOTIN {
-			filter := querybuilder.New(fSplit[1], opr, conj, strings.Split(v[0], ","))
+		if opr == condition.IN || opr == condition.NOTIN {
+			filter := condition.New(fSplit[1], opr, conj, strings.Split(v[0], ","))
 			qb.AddCondition(filter)
 			continue
 		}
-		filter := querybuilder.New(fSplit[1], opr, conj, v[0])
+		filter := condition.New(fSplit[1], opr, conj, v[0])
 		qb.AddCondition(filter)
 	}
 	return qb
@@ -87,7 +89,7 @@ func (b *builder) pagination(qb querybuilder.QueryBuilder) querybuilder.QueryBui
 
 func (b *builder) order(qb querybuilder.QueryBuilder) querybuilder.QueryBuilder {
 	var (
-		orderType querybuilder.Order
+		orderType order.Order
 		sort      string
 	)
 	sort = b.values.Get("sort")
@@ -97,11 +99,11 @@ func (b *builder) order(qb querybuilder.QueryBuilder) querybuilder.QueryBuilder 
 
 	switch sort[:1] {
 	case "+":
-		orderType = querybuilder.Ascending(sort[1:])
+		orderType = order.Ascending(sort[1:])
 	case "-":
-		orderType = querybuilder.Descending(sort[1:])
+		orderType = order.Descending(sort[1:])
 	default:
-		orderType = querybuilder.Ascending(sort)
+		orderType = order.Ascending(sort)
 	}
 
 	qb.AddOrder(orderType)
