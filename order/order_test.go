@@ -26,15 +26,16 @@ func TestWithQuery(t *testing.T) {
 	if v.String(false) != "userId ASC" {
 		t.Fatal("result should be userId ASC")
 	}
-	q.AddOrderIfNotExist(v)
-	if q.StringifyOrder() != "userId ASC" {
-		t.Fatal("result should be userId ASC")
-	}
+	q.AddOrder(v)
 	v = order.Descending(f)
 	if v.String(false) != "userId DESC" {
 		t.Fatal("result should be userId DESC")
 	}
+	q.AddOrder(v)
+	if len(q.Orders()) != 1 {
+		t.Fatal("querybuilder should have only one order with the same key")
+	}
 	if q.StringifyOrder() != "userId ASC" {
-		t.Fatal("result should be userId ASC")
+		t.Fatal("querybuilder should store the first ordering")
 	}
 }
